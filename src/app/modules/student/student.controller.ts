@@ -1,14 +1,13 @@
-import {
-  Request,
-  Params,
-} from './../../../../node_modules/@types/express-serve-static-core/index.d';
 import { Request, Response } from 'express';
 import { studentServices } from './student.service';
+import studentValidationSchema from './student.validation';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student } = req.body;
-    const result = await studentServices.createStudentFormDB(student);
+    const zodParseData = studentValidationSchema.parse(student);
+
+    const result = await studentServices.createStudentFormDB(zodParseData);
     res.status(200).json({
       success: true,
       message: 'student create is successfully done',

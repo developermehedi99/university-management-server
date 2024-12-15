@@ -1,6 +1,6 @@
 export type UserName = {
   fastName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
 };
 export type Guardian = {
