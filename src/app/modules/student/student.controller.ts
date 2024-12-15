@@ -14,7 +14,11 @@ const createStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'something is wrong',
+      data: err,
+    });
   }
 };
 
@@ -41,6 +45,24 @@ const getSingleStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'something is wrong',
+      data: err,
+    });
+  }
+};
+
+const deleteStudent = async (req: Request, res: Response) => {
+  try {
+    const { studentId } = req.params;
+    const result = await studentServices.deleteStudentFormBD(studentId);
+    res.status(200).json({
+      success: true,
+      messae: 'student delete is successfully done',
+      data: result,
+    });
+  } catch (err) {
     console.log(err);
   }
 };
@@ -49,4 +71,5 @@ export const studentController = {
   createStudent,
   getAllStudent,
   getSingleStudent,
+  deleteStudent,
 };

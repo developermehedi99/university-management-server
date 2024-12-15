@@ -16,8 +16,16 @@ const getSingleStudentFormDB = async (id: string) => {
   return result;
 };
 
+const deleteStudentFormBD = async (id: string) => {
+  const result = await StudentModel.deleteOne({ id });
+  return result;
+  // const result2 = await StudentModel.updateOne({ id }, { isDeleted: true });
+  //return result2;
+};
+
 export const studentServices = {
   createStudentFormDB,
   allStudentFormDB,
   getSingleStudentFormDB,
+  deleteStudentFormBD,
 };

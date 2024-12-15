@@ -1,10 +1,12 @@
 import { model, Schema } from 'mongoose';
+import bcrypt from 'bcrypt';
 import {
   Guardian,
   LocalGuardian,
   Student,
   UserName,
 } from './student.interface';
+import config from '../../config';
 
 const userNameSchema = new Schema<UserName>({
   fastName: { type: String, required: true },
@@ -55,11 +57,12 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 
 const studentSchema = new Schema<Student>(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
     name: userNameSchema,
     gender: ['male', 'female', 'others'],
     dateOfBirth: { type: String },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     contactNo: { type: String, required: true },
     emergencyContactNo: { type: String },
     bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
@@ -69,8 +72,30 @@ const studentSchema = new Schema<Student>(
     localGuardian: localGuardianSchema,
     profileImg: { type: String },
     isActive: ['active', 'block'],
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
+
+//middleware
+//pre
+studentSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  //pass hashing
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+
+//post
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
+//query method
 
 export const StudentModel = model<Student>('Student', studentSchema);
