@@ -58,6 +58,12 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 const studentSchema = new Schema<Student>(
   {
     id: { type: String, required: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      unique: true,
+      ref: 'User',
+    },
     password: { type: String, required: true },
     name: userNameSchema,
     gender: ['male', 'female', 'others'],
@@ -71,7 +77,6 @@ const studentSchema = new Schema<Student>(
     guardian: guardianSchema,
     localGuardian: localGuardianSchema,
     profileImg: { type: String },
-    isActive: ['active', 'block'],
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },
