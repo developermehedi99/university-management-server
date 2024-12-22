@@ -26,31 +26,37 @@ const localGuardianSchema = z.object({
 });
 
 // Zod schema for Student
-const studentValidationSchema = z.object({
-  id: z.string().min(1, 'ID is required'),
-  password: z.string().max(20),
-  name: userNameSchema,
-  gender: z.enum(['male', 'female', 'others'], {
-    errorMap: () => ({
-      message: "Gender must be 'male', 'female', or 'others'",
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameSchema,
+      gender: z.enum(['male', 'female', 'others'], {
+        errorMap: () => ({
+          message: "Gender must be 'male', 'female', or 'others'",
+        }),
+      }),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email('Invalid email format'),
+      contactNo: z.string().min(1, 'Contact number is required'),
+      emergencyContactNo: z
+        .string()
+        .min(1, 'Emergency contact number is required'),
+      bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
+        errorMap: () => ({ message: 'Invalid blood group' }),
+      }),
+      presentAddress: z.string().min(1, 'Present address is required'),
+      permanentAddress: z.string().min(1, 'Permanent address is required'),
+      guardian: guardianSchema,
+      localGuardian: localGuardianSchema,
+      profileImg: z
+        .string()
+        .url('Profile image must be a valid URL')
+        .optional(),
     }),
   }),
-  dateOfBirth: z.string().optional(),
-  email: z.string().email('Invalid email format'),
-  contactNo: z.string().min(1, 'Contact number is required'),
-  emergencyContactNo: z.string().min(1, 'Emergency contact number is required'),
-  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
-    errorMap: () => ({ message: 'Invalid blood group' }),
-  }),
-  presentAddress: z.string().min(1, 'Present address is required'),
-  permanentAddress: z.string().min(1, 'Permanent address is required'),
-  guardian: guardianSchema,
-  localGuardian: localGuardianSchema,
-  profileImg: z.string().url('Profile image must be a valid URL').optional(),
-  isActive: z.enum(['active', 'block'], {
-    errorMap: () => ({ message: "Status must be 'active' or 'block'" }),
-  }),
-  isDeleted: z.boolean(),
 });
 
-export default studentValidationSchema;
+export const studentValidations = {
+  createStudentValidationSchema,
+};
