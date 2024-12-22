@@ -17,6 +17,18 @@ const academicSemesterSchema = new Schema<academicSemester>(
   { timestamps: true },
 );
 
+//cheking semester name/year are same
+academicSemesterSchema.pre('save', async function (next) {
+  const isSemesterExists = await academicSemesterModel.findOne({
+    name: this.name,
+    year: this.year,
+  });
+  if (isSemesterExists) {
+    throw new Error('not valid semester');
+  }
+  next();
+});
+
 export const academicSemesterModel = model<academicSemester>(
   'academicSemester',
   academicSemesterSchema,
