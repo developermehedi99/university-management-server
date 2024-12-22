@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import config from '../../config';
 
 const UserSchema = new Schema({
-  id: { type: String, require: true },
+  id: { type: String, require: true, unique: true },
   password: { type: String },
   needsPasswordChange: { type: Boolean, default: true },
   role: { type: String, enum: ['student', 'faculty', 'admin'] },
